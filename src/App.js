@@ -11,6 +11,8 @@ import FormControl from '@mui/material/FormControl';
 import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -33,7 +35,9 @@ const MenuProps = {
 
 function App() {
   const [displayData, setDisplayData] = React.useState([]);
-  const [squareMeters, setSquareMeters] = React.useState(0);
+  const [squareMeters, setSquareMeters] = React.useState();
+  const [result, setResult] = React.useState(0);
+
 
   const handleChangeDisplay = (event) => {
     const {
@@ -47,10 +51,11 @@ function App() {
 
   const handleChangeMeters = (event) => {
     const {target: {value} } = event;
-    setSquareMeters(value)
+    setSquareMeters(value);
   }
 
   const handleCount = () => {
+    setResult(displayData.length ? displayData.map(item => item.value).reduce((item, accum) => item + accum) * squareMeters : 0) 
   }
 
   return (
@@ -58,9 +63,9 @@ function App() {
       <header className="App-header">
       <Item sx = {{width: '60%'}}>
          <Grid container spacing={2}>
-          <FormControl sx={{ m: 1, width: '100%' }}>
+          <FormControl sx={{ m: 3, width: '100%' }}>
             <InputLabel id="demo-multiple-checkbox-label">
-              Tag
+             Характеристика
             </InputLabel>
             <Select
             labelId="demo-multiple-checkbox-label"
@@ -68,18 +73,43 @@ function App() {
             multiple
             value={displayData}
             onChange={handleChangeDisplay}
-            input={<OutlinedInput label="Tag" />}
+            input={<OutlinedInput label="Характеристика" />}
             renderValue={(selected) => selected.map(item => item.name).join(', ')}
             MenuProps={MenuProps}
             >
             {data.map((item) => (
               <MenuItem key={item.id} value={item}>
-                <Checkbox checked={displayData.indexOf(item.name) > -1} />
+                <Checkbox checked={displayData.indexOf(item) > -1} />
                 <ListItemText primary={item.name} secondary={item.subname} />
               </MenuItem>
             ))} 
             </Select>
           </FormControl>
+          <Grid item xs={5} alignSelf=''>
+            <TextField
+            id="outlined-number"
+            label="Метры кв."
+            type="number"
+            onChange={(event) => handleChangeMeters(event)}
+            value={squareMeters}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            sx={{width: '100%', m:1}}
+            />
+          </ Grid>
+          <Grid item xs={4} alignSelf='center'>
+            <Button
+            variant='outlined'
+            onClick={() => console.log(handleCount())}
+            sx={{width: '80%', height: '56px'}}
+            >
+            Посчитать сумму
+            </Button>
+          </ Grid>  
+          <Grid item xs={2} alignSelf='center'>
+          result: {result}
+          </Grid>
         </Grid>
       </Item>
           
